@@ -4,15 +4,9 @@ pipeline {
     stages {
         stage('Deploy on k8s') {
             steps {
-                withCredentials([string(credentialsId: 'minikube_credentials', variable: 'api_token')]) {
-                    sh '''
-                        echo "Deploying Deployment"
-                        kubectl --token $api_token --server https://host.docker.internal:59443 --insecure-skip-tls-verify=true apply -f ./k8s/deployment.yaml --validate=false --v=8
-                    '''
-                    sh '''
-                        echo "Deploying Service"
-                        kubectl --token $api_token --server https://host.docker.internal:59443 --insecure-skip-tls-verify=true apply -f ./k8s/service.yaml --validate=false --v=8
-                    '''
+                withCredentials([ string(credentialsId: 'minikube_credentials', variable: 'api_token') ]) {
+                    sh 'kubectl --token $api_token --server https://host.docker.internal:51293  --insecure-skip-tls-verify=true apply -f ./k8s/deployment.yaml '
+                    sh 'kubectl --token $api_token --server https://host.docker.internal:51293  --insecure-skip-tls-verify=true apply -f ./k8s/service.yaml '
                 }
             }
         }
